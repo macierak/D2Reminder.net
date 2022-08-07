@@ -31,10 +31,10 @@ connectToDB().then(async () => {
     //    
     //});
     
-    ///*
-    //    ---------------------------------------------------------- Daily tasks ----------------------------------------------------------
-    //*/
-    ////  O godzinie 20 - Odświeżenie informacji o sprzedawcach
+    /*
+        ---------------------------------------------------------- Daily tasks ----------------------------------------------------------
+    */
+    //  O godzinie 20 - Odświeżenie informacji o sprzedawcach
     schedule('* 20 * * *', async () => {
         await refreshVendorInfo(defaultGuardian)
         bansheeItems = Object.values(vendorInfo.banshee)

@@ -5,8 +5,10 @@ import { refreshVendorInfo, vendorInfo } from "../_modules/dailyCheckup";
 import Reminder from "../_modules/Reminder";
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser'
-import { getchar, getToken } from "../_modules/BungieAPI";
+import * as dotenv from "dotenv";
+import { downloadManifest, getchar, getToken } from "../_modules/BungieAPI";
 import { ObjectId } from "mongodb";
+import { IGuardian } from "../_interfaces/IGuardian";
 export const app = express.Router()
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -24,25 +26,19 @@ app.post("/login", async function(req, res){
 })
 
 app.post("/new/user", async function(req, res){
-    let newGuardian = new Guardian()
+    let newGuardian = new Guardian()  
+
     await getToken(newGuardian, req.body.authCode)
-    setTimeout(() => {
-        getchar(newGuardian)
-    }, 1000)
-    setTimeout(() => {
-        console.log(newGuardian.toJSON())
-        database.guardians?.insertOne(newGuardian.toJSON())
+    await getchar(newGuardian)
+    await database.guardians?.insertOne(newGuardian.toJSON())
+    
     return res.status(200).send({message: "Pomyślnie dodano konto"})
-    }, 10000);
+
     
 })
 
 app.post("/new/reminder", async function(req, res){
-    console.log(req.body.weaponID);
-    console.log(req.body.weaponPerks);
-    console.log(req.body.guardianID)
     let id = req.body.guardianID
-    console.log(id);
     
     let guardian = new ObjectId(id)
     let perks:string = req.body.weaponPerks
@@ -62,4 +58,11 @@ app.get("/reminders/list/:user", async function(req, res){
 app.get("/get/vendorinfo", async function(req, res) {
     if(vendorInfo) return res.status(200).send(vendorInfo)
     return res.status(404).send({message: "No vendor info avaliable"})
+})
+app.put("/manifest/update",async (req, res) => {
+    if(req.body.superdupersercetkey != process.env.superdupersecretkey) return res.status(401)
+    let defaultGuardian:IGuardian = null as unknown as IGuardian
+    let test = await database.guardians?.findOne({})     
+    defaultGuardian = test as IGuardian
+    downloadManifest(defaultGuardian);
 })
