@@ -13,8 +13,8 @@ messengerRouter.use(express.json())
 messengerRouter.post('/webhook', (req, res) => {  
 	let body = req.body;
 	console.log(body);
-	console.log(body.entry[0].messaging);
-	
+	console.log(body.entry[0].messaging.message.text);
+	/*
 	if (body.object === 'page') {
 		body.entry.forEach( (entry:any) => {
             //sample: dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417			
@@ -36,11 +36,13 @@ messengerRouter.post('/webhook', (req, res) => {
                .then(res => { })
                .catch(err =>{console.log(err.response)}) 
 		});
+		
 		res.status(200).send('EVENT_RECEIVED');
 		
 	} else {
 		res.sendStatus(404);
 	}
+	*/
 })
 
 messengerRouter.get('/webhook', (req, res) => {
