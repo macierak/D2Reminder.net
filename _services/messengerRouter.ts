@@ -13,7 +13,8 @@ messengerRouter.use(express.json())
 messengerRouter.post('/webhook', (req, res) => {  
 	let body = req.body;
 	console.log(body);
-
+	console.log(body.messaging);
+	
 	if (body.object === 'page') {
 		body.entry.forEach( (entry:any) => {
             //sample: dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417			
