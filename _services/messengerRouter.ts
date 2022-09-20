@@ -1,3 +1,5 @@
+import { sendMess } from "../_modules/FacebookAPI"
+
 const
 	express = require('express'),
 	bodyParser = require('body-parser'),
@@ -23,7 +25,11 @@ messengerRouter.post('/webhook', (req, res) => {
 			if (senderMessage === `help`) {
 				sendMessage(senderPsid, sendHelpResponse())
 			}
+			if (validate(senderMessage)) {
 
+			} else {
+				sendMessage(senderPsid, "Message was not validated properly. send 'help' for proper message format")
+			}
 
 
 		})
