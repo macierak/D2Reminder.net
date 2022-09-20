@@ -66,7 +66,7 @@ export async function getVendorInfo(guardian:IGuardian){
     
 }
 export async function loadManifest(guardian:IGuardian){ 
-    let raw = fs.readFileSync(path.resolve('./manifest.json')) as unknown as string
+    let raw = fs.readFileSync(path.resolve('./public/manifest.json')) as unknown as string
     itemManifest = JSON.parse(raw)
     
 }
