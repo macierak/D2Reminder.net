@@ -75,7 +75,7 @@ function sendMessage(sender_psid: string, message: string) {
 
 function validate(text: string) {
 	let regex1: RegExp = /dimwishlist:item=\d+&perks=(\d+(,\d+)+)/
-	let regex2: RegExp = /dimwishlist:item=\d/
+	let regex2: RegExp = /dimwishlist:item=\d+&/
 	return regex1.test(text) || regex2.test(text)
 }
 
