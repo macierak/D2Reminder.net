@@ -22,11 +22,10 @@ messengerRouter.post('/webhook', (req, res) => {
 			let webhookEvent = entry.messaging[0];
 			let senderPsid = webhookEvent.sender.id;
 			let senderMessage = webhookEvent.message.text
-			if (senderMessage === `help`) {
-				sendMessage(senderPsid, sendHelpResponse())
-			}
 			if (validate(senderMessage)) {
 
+			} else if(senderMessage === `help`) {
+				sendMessage(senderPsid, sendHelpResponse())
 			} else {
 				sendMessage(senderPsid, "Message was not validated properly. send 'help' for proper message format")
 			}
@@ -77,10 +76,7 @@ function sendMessage(sender_psid: string, message: string) {
 function validate(text: string) {
 	let regex1: RegExp = /dimwishlist:item=\d+&perks=(\d+(,\d+)+)/
 	let regex2: RegExp = /dimwishlist:item=\d/
-	if (regex1.test(text) && regex2.test(text)) {
-		return true
-	}
-	return false
+	return regex1.test(text) || regex2.test(text)
 }
 
 function sendHelpResponse() {
