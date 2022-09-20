@@ -14,35 +14,24 @@ messengerRouter.post('/webhook', (req, res) => {
 	let body = req.body;
 	console.log(body);
 	console.log(body.entry[0].messaging[0].message.text);
-	/*
 	if (body.object === 'page') {
 		body.entry.forEach( (entry:any) => {
             //sample: dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417			
-			let webhook_event = entry.messaging[0];
-			let sender_psid = webhook_event.sender.id;
-
-			let data = {
-				headers: {
-					'content-Type': 'messengerRouterlication/json'
-				},
-				'recipient':{
-					'id':sender_psid
-				},
-				'message': {
-					'text': newRegisterMessage 
-                   }   
-		    }   
-		    axios.post(`https://graph.facebook.com/v12.0/me/messages?access_token=${env.mess_token}`, data)
-               .then(res => { })
-               .catch(err =>{console.log(err.response)}) 
-		});
+			let webhookEvent = entry.messaging[0];
+			let senderPsid = webhookEvent.sender.id;
+			let senderMessage = webhookEvent.message.text
+			if(senderMessage === `help`) {
+				sendMessage(senderPsid, sendHelpResponse())
+			}
+			
 		
+		
+		})
 		res.status(200).send('EVENT_RECEIVED');
-		
 	} else {
 		res.sendStatus(404);
 	}
-	*/
+	
 	res.sendStatus(200)
 })
 
@@ -62,6 +51,23 @@ messengerRouter.get('/webhook', (req, res) => {
 		}
 });
 
+function sendMessage(sender_psid:string, message:string) {
+	let data = {
+		headers: {
+			'content-Type': 'messengerRouterlication/json'
+		},
+		'recipient':{
+			'id':sender_psid
+		},
+		'message': {
+			'text': message
+		   }   
+	}   
+	axios.post(`https://graph.facebook.com/v12.0/me/messages?access_token=${env.mess_token}`, data)
+	   .then(res => { })
+	   .catch(err =>{console.log(err.response)}) 
+}
+
 function validate(text:string){
     let regex1:RegExp = /dimwishlist:item=\d+&perks=(\d+(,\d+)+)/
     let regex2:RegExp = /dimwishlist:item=\d/
@@ -71,6 +77,6 @@ function validate(text:string){
     return false
 }
 
-let newRegisterMessage = (sender_psid:string) => {
-return `Welcome to D2Reminder! `
+function sendHelpResponse() {
+	return "Welcome to D2Reminder! Send a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' to be notified when a vendor sells it. Send that message again to cancel notification."
 }
