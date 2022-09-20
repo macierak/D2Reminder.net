@@ -26,7 +26,7 @@ messengerRouter.post('/webhook', (req, res) => {
 			if (validate(senderMessage)) {
 				let weaponID = senderMessage.split("&")[0].split("=")[1]
 				let perks = senderMessage.split("&")[1].split("=")[1].split(",")
-				sendMessage(senderPsid, weaponID + " " + perks)
+				sendMessage(senderPsid, weaponID + " " + perks[0])
 			} else if(senderMessage === `help`) {
 				sendMessage(senderPsid, sendHelpResponse())
 			} else {
