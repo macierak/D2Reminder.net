@@ -9,7 +9,7 @@ import Guardian from "./_modules/Guardian";
 import { getItemDetails, itemManifest, loadManifest, refresh } from "./_modules/BungieAPI";
 import { Filter, ObjectId } from "mongodb";
 const server = express()
-
+const port = process.env.PORT || 3000
 connectToDB().then(async () => {
     server.use("/", app)
     server.use("/", messengerRouter)
@@ -42,7 +42,7 @@ connectToDB().then(async () => {
             await searchRemindersFor(element.itemHash)
         });
     } )
-    server.listen(3000)
+    server.listen(port)
 })
 
 
