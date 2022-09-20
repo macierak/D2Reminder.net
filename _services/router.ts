@@ -26,15 +26,17 @@ app.post("/login", async function(req, res){
 })
 
 app.post("/new/user", async function(req, res){
-    let newGuardian = new Guardian()  
-
-    await getToken(newGuardian, req.body.authCode)
-    await getchar(newGuardian)
-    await database.guardians?.insertOne(newGuardian.toJSON())
+    let newGuardian:IGuardian 
+    await getToken(new Guardian() , req.body.authCode).then(guard => {
+        newGuardian = guard
+        console.log(guard);
+        
+    })
+    //console.log(newGuardian.toJSON());
+    
+    //await database.guardians?.insertOne(newGuardian.toJSON())
     
     return res.status(200).send({message: "Pomyślnie dodano konto"})
-
-    
 })
 
 app.post("/new/reminder", async function(req, res){

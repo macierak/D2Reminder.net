@@ -20,5 +20,5 @@ export interface IGuardian{
          },
     }
     reminders:{}
-
+    toJSON()
 }

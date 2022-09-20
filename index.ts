@@ -4,15 +4,15 @@ import { vendorInfo, refreshVendorInfo, searchRemindersFor } from "./_modules/da
 import { IGuardian } from "./_interfaces/IGuardian";
 import { database, connectToDB } from "./_services/databaseService";
 import { app } from "./_services/router";
+import { messengerRouter }from "./_services/messengerRouter"
 import Guardian from "./_modules/Guardian";
 import { getItemDetails, itemManifest, loadManifest, refresh } from "./_modules/BungieAPI";
 import { Filter, ObjectId } from "mongodb";
 const server = express()
 
-
 connectToDB().then(async () => {
     server.use("/", app)
-    console.log("Działa")
+    server.use("/", messengerRouter)
     
     let defaultGuardian:IGuardian = null as unknown as IGuardian
     let test = await database.guardians?.findOne({})     
@@ -24,16 +24,12 @@ connectToDB().then(async () => {
     })
     let bansheeItems:any = Object.values(vendorInfo.banshee) 
     let adaItems:any = Object.values(vendorInfo.ada)
-
-    //console.log(bansheeItems);
-    //bansheeItems.forEach(async element => {
-    //    console.log(await getItemDetails(element.itemHash)[1].displayProperties.name );
-    //    
-    //});
     
-    /*
-        ---------------------------------------------------------- Daily tasks ----------------------------------------------------------
-    */
+    /***
+     * 
+     * ---------------------------------------------------------- Daily tasks ----------------------------------------------------------
+     */
+        
     //  O godzinie 20 - Odświeżenie informacji o sprzedawcach
     schedule('* 20 * * *', async () => {
         await refreshVendorInfo(defaultGuardian)

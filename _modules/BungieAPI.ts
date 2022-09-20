@@ -24,7 +24,10 @@ async function ada(guardian: IGuardian) {
         });
         console.log(fullItemTable)
         return fullItemTable
-    }).catch(err => {  console.log("Ada Error"); console.error(err) })
+    }).catch(err => {  
+        console.log("Ada Error")
+        //console.error(err)
+     })
     return fullItemTable
 }
 
@@ -45,18 +48,19 @@ async function banshee(guardian: IGuardian) {
             }         
         });
         return fullItemTable
-    }).catch(err => { console.log(err); console.log("Banshee Error") })
+    }).catch(err => { 
+        console.log(err)
+        console.log("Banshee Error") 
+    })
     return fullItemTable
 }
 
 export async function getVendorInfo(guardian:IGuardian){
-    let  vendorData
-    
-    vendorData = {
+    let vendorData = {
         ada : await ada(guardian),
         banshee : await banshee(guardian)
     }
-    console.log(vendorData.ada);
+    //console.log(vendorData.ada);
     
     return vendorData
     
@@ -69,9 +73,8 @@ export async function loadManifest(guardian:IGuardian){
 export async function downloadManifest(guardian:IGuardian) {
     await axios.get(`https://www.bungie.net/platform/Destiny2/Manifest/`, guardian.cred).then(res => {
     manifestLink = res.data.Response.jsonWorldContentPaths.en
-    
-})
-await axios.get(`https://www.bungie.net${manifestLink}`).then(res => {
+    })
+    await axios.get(`https://www.bungie.net${manifestLink}`).then(res => {
         itemManifest = Object.entries(res.data.DestinyInventoryItemDefinition)
         fs.writeFileSync('manifest.json', JSON.stringify(itemManifest))
 })
@@ -82,7 +85,7 @@ export function getItemDetails(hashIdentifier:string){
      
 }
 
-export async function getToken(guardian: IGuardian, authorization_code: string) {
+export async function getToken(guardian: IGuardian, authorization_code: string):Promise<IGuardian> {
     let data = {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW',
@@ -92,18 +95,22 @@ export async function getToken(guardian: IGuardian, authorization_code: string) 
         'client_secret': process.env.secret as string
     }
     let content = new URLSearchParams(Object.entries(data)).toString();
-console.log(authorization_code)
-    axios.post('https://www.bungie.net/platform/app/oauth/token/', content).then(res => {
+    axios.post('https://www.bungie.net/platform/app/oauth/token/', content).then(async res => {
         guardian.token = res.data.access_token
-        guardian.rToken = res.data.refresh_token
+        guardian.rToken = res.data.refresh_token        
         guardian.cred = {
             headers: {
                 'X-API-Key': process.env.key,
                 'Authorization': `Bearer ${guardian.token}`
             },
         }
-    }).catch(err => { console.error(err) })
-
+        await getchar(guardian)
+        return guardian
+    }).catch(err => { 
+        console.error(err) 
+        return guardian
+    })
+    return guardian
 
 }
 

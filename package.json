@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "npx tsc && node ./..mainFiles/index.js "
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,8 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "facebook-bot-messenger": "^1.0.9",
+    "messaging-api-messenger": "^1.1.0",
     "mongodb": "^4.6.0",
     "node-cron": "^3.0.0",
     "typescript": "^4.6.2"
