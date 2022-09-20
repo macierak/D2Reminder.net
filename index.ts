@@ -19,9 +19,7 @@ connectToDB().then(async () => {
     defaultGuardian = test as IGuardian
     await refresh(defaultGuardian)
     await refreshVendorInfo(defaultGuardian)
-    //await loadManifest(defaultGuardian).then(() => {
-    //    console.log("Manifest ready");
-    //})
+    await loadManifest(defaultGuardian).then(() => { console.log("Manifest ready")  })
     let bansheeItems:any = Object.values(vendorInfo.banshee) 
     let adaItems:any = Object.values(vendorInfo.ada)
     

@@ -7,6 +7,7 @@ import { database } from "../_services/databaseService";
 import Guardian from "./Guardian"
 let manifestLink:String = ""
 export let itemManifest: any
+
 async function ada(guardian: IGuardian) {
     let fullItemTable:any = [{
         itemHash : "" ,
