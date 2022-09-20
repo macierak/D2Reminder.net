@@ -1,4 +1,5 @@
 import { sendMess } from "../_modules/FacebookAPI"
+import { database } from "./databaseService"
 
 const
 	express = require('express'),
@@ -21,9 +22,11 @@ messengerRouter.post('/webhook', (req, res) => {
 			//sample: dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417			
 			let webhookEvent = entry.messaging[0];
 			let senderPsid = webhookEvent.sender.id;
-			let senderMessage = webhookEvent.message.text
+			let senderMessage:string = webhookEvent.message.text
 			if (validate(senderMessage)) {
-
+				let weaponID = senderMessage.split("&")[0].split("=")[1]
+				let perks = senderMessage.split("&")[1].split("=")[1].split(",")
+				sendMessage(senderPsid, weaponID + " " + perks)
 			} else if(senderMessage === `help`) {
 				sendMessage(senderPsid, sendHelpResponse())
 			} else {
