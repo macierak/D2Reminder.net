@@ -42,7 +42,7 @@ connectToDB().then(async () => {
             await searchRemindersFor(element.itemHash)
         });
     } )
-    server.listen(3321)
+    server.listen(3000)
 })
 
 
