@@ -13,7 +13,7 @@ messengerRouter.use(express.json())
 messengerRouter.post('/webhook', (req, res) => {  
 	let body = req.body;
 	console.log(body);
-	console.log(body.entry[0].messaging.message.text);
+	console.log(body.entry[0].messaging[0].message.text);
 	/*
 	if (body.object === 'page') {
 		body.entry.forEach( (entry:any) => {
