@@ -42,7 +42,7 @@ app.post("/new/user", async function(req, res){
 app.post("/new/reminder", async function(req, res){
     let id = req.body.guardianID
     
-    let guardian = new ObjectId(id)
+    let guardian:string = req.body.fbId
     let perks:string = req.body.weaponPerks
     let perkTable = perks.split(",")
     let perkJSON = {1:perkTable[0], 2:perkTable[1], 3:perkTable[2], 4:perkTable[3]}
