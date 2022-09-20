@@ -80,5 +80,5 @@ function validate(text: string) {
 }
 
 function sendHelpResponse() {
-	return "Welcome to D2Reminder! \nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' to be notified when a vendor sells it. \nSend that message again to cancel notification."
+	return "Welcome to D2Reminder! \nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it. \nSend that message again to cancel notification."
 }
