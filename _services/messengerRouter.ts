@@ -43,6 +43,7 @@ messengerRouter.post('/webhook', (req, res) => {
 		res.sendStatus(404);
 	}
 	*/
+	res.sendStatus(200)
 })
 
 messengerRouter.get('/webhook', (req, res) => {
