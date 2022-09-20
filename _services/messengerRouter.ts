@@ -1,4 +1,7 @@
+import { IGuardian } from "../_interfaces/IGuardian"
 import { sendMess } from "../_modules/FacebookAPI"
+import Guardian from "../_modules/Guardian"
+import Reminder from "../_modules/Reminder"
 import { database } from "./databaseService"
 
 const
@@ -24,9 +27,13 @@ messengerRouter.post('/webhook', (req, res) => {
 			let senderPsid = webhookEvent.sender.id;
 			let senderMessage:string = webhookEvent.message.text
 			if (validate(senderMessage)) {
+
 				let weaponID = senderMessage.split("&")[0].split("=")[1]
 				let perks = senderMessage.split("&")[1].split("=")[1].split(",")
-				sendMessage(senderPsid, weaponID + " " + perks[0])
+				let perksHashTable = {1: perks[0], 2: perks[1], 3: perks[2], 4: perks[3]}
+				let reminder = new Reminder(weaponID, perksHashTable, senderPsid)
+				database.reminders?.insertOne(reminder)
+				sendMessage(senderPsid, reminder.toString())
 			} else if(senderMessage === `help`) {
 				sendMessage(senderPsid, sendHelpResponse())
 			} else {

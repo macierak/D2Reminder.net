@@ -1,4 +1,5 @@
 export interface IReminder{
+    fbId:string
     itemHash:string
     secondaryHash:{    
         1:string
