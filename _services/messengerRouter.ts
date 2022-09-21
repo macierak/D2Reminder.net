@@ -44,7 +44,7 @@ messengerRouter.post('/webhook', (req, res) => {
 				database.reminders?.insertOne(reminder)
 				sendMessage(senderPsid, reminder.toString())
 			} else if(senderMessage === `help`) {
-				sendMessage(senderPsid, sendHelpResponse())
+				sendMessage(senderPsid, sendHelpResponse(senderPsid))
 			} else {
 				sendMessage(senderPsid, "Message was not validated properly. send 'help' for proper message format")
 			}
@@ -100,6 +100,9 @@ function validate(text: string) {
 	return reminderType.NONE
 }
 
-function sendHelpResponse() {
-	return "Welcome to D2Reminder! \nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it. \nSend that message again to cancel notification."
+function sendHelpResponse(senderPsid:string) {
+	sendMessage(senderPsid, "Welcone to D2Reminder!")
+	sendMessage(senderPsid, "Send a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.")
+	sendMessage(senderPsid, "Send that message again to cancel notification.")
+	return "List of currently supported vendors: Ada-1, Banshee-44"
 }
