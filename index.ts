@@ -29,7 +29,9 @@ connectToDB().then(async () => {
      */
         
     //  O godzinie 20 - Odświeżenie informacji o sprzedawcach
-    schedule('* 19 06 * *', async () => {
+    schedule('* 19 10 * *', async () => {
+        console.log("Zaczynam skan");
+        
         await refreshVendorInfo(defaultGuardian)
         bansheeItems = Object.values(vendorInfo.banshee)
         adaItems = Object.values(vendorInfo.ada)
