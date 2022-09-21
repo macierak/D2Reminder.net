@@ -29,7 +29,7 @@ connectToDB().then(async () => {
      */
         
     //  O godzinie 20 - Odświeżenie informacji o sprzedawcach
-    schedule('13 19 * * *', async () => {
+    //schedule('13 19 * * *', async () => {
         console.log("Zaczynam skan");
         
         await refreshVendorInfo(defaultGuardian)
@@ -41,9 +41,11 @@ connectToDB().then(async () => {
         adaItems.forEach(async element => {
             await searchRemindersFor(element.itemHash, "Ada-1")
         });
-    } )
+    //} )
     server.listen(port)
 })
+
+
 
 
 
