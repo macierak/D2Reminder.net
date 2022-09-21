@@ -8,6 +8,14 @@ import Guardian from "./Guardian"
 let manifestLink:String = ""
 export let itemManifest: any
 
+const {chain}  = require('stream-chain');
+
+const {parser} = require('stream-json');
+const {pick}   = require('stream-json/filters/Pick');
+const {ignore} = require('stream-json/filters/Ignore');
+const {streamValues} = require('stream-json/streamers/StreamValues');
+const zlib = require('zlib');
+
 async function ada(guardian: IGuardian) {
     let fullItemTable:any = [{
         itemHash : "" ,
@@ -67,17 +75,19 @@ export async function getVendorInfo(guardian:IGuardian){
     
 }
 export async function loadManifest(guardian:IGuardian){ 
-    let raw = fs.readFileSync(path.resolve('./app/public/manifest.json')) as unknown as string
-    itemManifest = JSON.parse(raw)
     
 }
+const pipeline = chain([
+    fs.createReadStream(path.resolve('/app/public/manifest.json'))
+])
+
 export async function downloadManifest(guardian:IGuardian) {
     await axios.get(`https://www.bungie.net/platform/Destiny2/Manifest/`, guardian.cred).then(res => {
     manifestLink = res.data.Response.jsonWorldContentPaths.en
     })
     await axios.get(`https://www.bungie.net${manifestLink}`).then(res => {
         itemManifest = Object.entries(res.data.DestinyInventoryItemDefinition)
-        fs.writeFileSync('manifest.json', JSON.stringify(itemManifest))
+        //fs.writeFileSync('manifest.json', JSON.stringify(itemManifest))
 })
 }
 

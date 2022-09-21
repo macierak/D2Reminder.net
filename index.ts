@@ -6,7 +6,7 @@ import { database, connectToDB } from "./_services/databaseService";
 import { app } from "./_services/router";
 import { messengerRouter }from "./_services/messengerRouter"
 import Guardian from "./_modules/Guardian";
-import { getItemDetails, itemManifest, loadManifest, refresh } from "./_modules/BungieAPI";
+import { downloadManifest, getItemDetails, itemManifest, loadManifest, refresh } from "./_modules/BungieAPI";
 import { Filter, ObjectId } from "mongodb";
 const server = express()
 const port = process.env.PORT || 3000
@@ -19,7 +19,7 @@ connectToDB().then(async () => {
     defaultGuardian = test as IGuardian
     await refresh(defaultGuardian)
     await refreshVendorInfo(defaultGuardian)
-    await loadManifest(defaultGuardian).then(() => { console.log("Manifest ready")  })
+    await downloadManifest(defaultGuardian).then(() => { console.log("Manifest ready")  })
     let bansheeItems:any = Object.values(vendorInfo.banshee) 
     let adaItems:any = Object.values(vendorInfo.ada)
     
