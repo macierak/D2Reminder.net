@@ -29,7 +29,7 @@ connectToDB().then(async () => {
      */
         
     //  O godzinie 20 - Odświeżenie informacji o sprzedawcach
-    schedule('* 19 10 * *', async () => {
+    schedule('13 19 * * *', async () => {
         console.log("Zaczynam skan");
         
         await refreshVendorInfo(defaultGuardian)
