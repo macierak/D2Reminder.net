@@ -16,8 +16,8 @@ export async function searchRemindersFor(hashIdentifier:string, vendor:string){
     let regex = new RegExp(hashIdentifier);
     let remindersList = await database.reminders?.find({ "itemHash": regex }).toArray() as unknown as Array<Reminder>
     remindersList.forEach(async element => {
-        let guardian = await database.guardians?.findOne({"FB_ID": element.fbId}) as unknown as Guardian
+        //let guardian = await database.guardians?.findOne({"FB_ID": element.fbId}) as unknown as Guardian
         let message = `One of your items is currently sold in game by ${vendor}`
-        sendMess(guardian.FB_ID, message)
+        sendMess(element.fbId, message)
     });
 }
