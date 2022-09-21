@@ -19,7 +19,7 @@ connectToDB().then(async () => {
     defaultGuardian = test as IGuardian
     await refresh(defaultGuardian)
     await refreshVendorInfo(defaultGuardian)
-    await downloadManifest(defaultGuardian).then(() => { console.log("Manifest ready")  })
+    //await downloadManifest(defaultGuardian).then(() => { console.log("Manifest ready")  })
     let bansheeItems:any = Object.values(vendorInfo.banshee) 
     let adaItems:any = Object.values(vendorInfo.ada)
     
@@ -34,10 +34,10 @@ connectToDB().then(async () => {
         bansheeItems = Object.values(vendorInfo.banshee)
         adaItems = Object.values(vendorInfo.ada)
         bansheeItems.forEach(async element => { 
-            await searchRemindersFor(element.itemHash)
+            await searchRemindersFor(element.itemHash, "Banshee-44")
         });
         adaItems.forEach(async element => {
-            await searchRemindersFor(element.itemHash)
+            await searchRemindersFor(element.itemHash, "Ada-1")
         });
     } )
     server.listen(port)

@@ -10,26 +10,14 @@ import Reminder from "./Reminder";
 export let vendorInfo:any
 export async function refreshVendorInfo(defaultGuardian:IGuardian){
     vendorInfo = await getVendorInfo(defaultGuardian)
-    
-}
-export function run(){
-    let bansheeItems:any = Object.values(vendorInfo.banshee)
-    bansheeItems.forEach(element => {
-        searchRemindersFor(element.itemHash)
-    });
-
 }
 
-export async function searchRemindersFor(hashIdentifier:string){
+export async function searchRemindersFor(hashIdentifier:string, vendor:string){
     let regex = new RegExp(hashIdentifier);
     let remindersList = await database.reminders?.find({ "itemHash": regex }).toArray() as unknown as Array<Reminder>
     remindersList.forEach(async element => {
         let guardian = await database.guardians?.findOne({"FB_ID": element.fbId}) as unknown as Guardian
-
-        let itemdata = await getItemDetails(element.itemHash)
-
-        
-        let message = `Your item "${itemdata[1].displayProperties.name}" is currently being sold in game`
+        let message = `One of your items is currently sold in game by ${vendor}`
         sendMess(guardian.FB_ID, message)
     });
 }
