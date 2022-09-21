@@ -19,5 +19,6 @@ export async function searchRemindersFor(hashIdentifier:string, vendor:string){
         //let guardian = await database.guardians?.findOne({"FB_ID": element.fbId}) as unknown as Guardian
         let message = `One of your items is currently sold in game by ${vendor}`
         sendMess(element.fbId, message)
+        database.reminders?.findOneAndDelete(element)
     });
 }

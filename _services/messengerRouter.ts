@@ -37,12 +37,11 @@ messengerRouter.post('/webhook', (req, res) => {
 				let reminder = new Reminder(weaponID, perksHashTable, senderPsid)
 
 				database.reminders?.insertOne(reminder)
-				sendMessage(senderPsid, reminder.toString())
 			} else if(validate(senderMessage) === reminderType.SINGLE) {
 				let itemID = senderMessage.split("&")[0].split("=")[1]
 				let reminder = new Reminder(itemID, {1: "", 2: "", 3: "", 4: ""}, senderPsid)
 				database.reminders?.insertOne(reminder)
-				sendMessage(senderPsid, reminder.toString())
+
 			} else if(senderMessage === `help`) {
 				sendMessage(senderPsid, sendHelpResponse(senderPsid))
 			} else {
@@ -101,6 +100,6 @@ function validate(text: string) {
 }
 
 function sendHelpResponse(senderPsid:string) {
-	return "Welcone to D2Reminder!\nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.\nSend that message again to cancel notification.\nList of currently supported vendors: Ada-1, Banshee-44"
+	return "Welcone to D2Reminder!\nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.\nReminder is automatically deleted when delivered\nList of currently supported vendors: Ada-1, Banshee-44"
 
 }
