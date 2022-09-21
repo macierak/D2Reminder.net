@@ -3,7 +3,11 @@ import { sendMess } from "../_modules/FacebookAPI"
 import Guardian from "../_modules/Guardian"
 import Reminder from "../_modules/Reminder"
 import { database } from "./databaseService"
-
+enum reminderType {
+	SINGLE,
+	MULTI,
+	NONE
+}
 const
 	express = require('express'),
 	bodyParser = require('body-parser'),
@@ -26,12 +30,17 @@ messengerRouter.post('/webhook', (req, res) => {
 			let webhookEvent = entry.messaging[0];
 			let senderPsid = webhookEvent.sender.id;
 			let senderMessage:string = webhookEvent.message.text
-			if (validate(senderMessage)) {
-
+			if (validate(senderMessage) === reminderType.MULTI) {
 				let weaponID = senderMessage.split("&")[0].split("=")[1]
 				let perks = senderMessage.split("&")[1].split("=")[1].split(",")
 				let perksHashTable = {1: perks[0], 2: perks[1], 3: perks[2], 4: perks[3]}
 				let reminder = new Reminder(weaponID, perksHashTable, senderPsid)
+
+				database.reminders?.insertOne(reminder)
+				sendMessage(senderPsid, reminder.toString())
+			} else if(validate(senderMessage) === reminderType.SINGLE) {
+				let itemID = senderMessage.split("&")[0].split("=")[1]
+				let reminder = new Reminder(itemID, {1: "", 2: "", 3: "", 4: ""}, senderPsid)
 				database.reminders?.insertOne(reminder)
 				sendMessage(senderPsid, reminder.toString())
 			} else if(senderMessage === `help`) {
@@ -86,7 +95,9 @@ function sendMessage(sender_psid: string, message: string) {
 function validate(text: string) {
 	let regex1: RegExp = /dimwishlist:item=\d+&perks=(\d+(,\d+)+)/
 	let regex2: RegExp = /dimwishlist:item=\d+&/
-	return regex1.test(text) || regex2.test(text)
+	if(regex1.test(text)) return reminderType.MULTI
+	if(regex2.test(text)) return reminderType.SINGLE
+	return reminderType.NONE
 }
 
 function sendHelpResponse() {
