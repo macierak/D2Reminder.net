@@ -10,9 +10,15 @@ import { downloadManifest, getItemDetails, itemManifest, refresh } from "./_modu
 import { Filter, ObjectId } from "mongodb";
 const server = express()
 const port = process.env.PORT || 3000
+console.log("Connecting to db...");
+
 connectToDB().then(async () => {
+    console.log("Connection to db successfull");
+    
     server.use("/", app)
     server.use("/", messengerRouter)
+    
+    console.log("Initializing default variables...");
     
     let defaultGuardian:IGuardian = null as unknown as IGuardian
     let test = await database.guardians?.findOne({})     
@@ -22,6 +28,8 @@ connectToDB().then(async () => {
     //await downloadManifest(defaultGuardian).then(() => { console.log("Manifest ready")  })
     let bansheeItems:any = Object.values(vendorInfo.banshee) 
     let adaItems:any = Object.values(vendorInfo.ada)
+    
+    console.log("Initialization successfull");
     
     /***
      * 
@@ -42,7 +50,15 @@ connectToDB().then(async () => {
             await searchRemindersFor(element.itemHash, "Ada-1")
         });
     } )
+
+    console.log("Cron set up properly");
+    
+
     server.listen(port)
+    console.log(`Server listening on port ${port}`);
+    
+    console.log("Ready");
+    
 })
 
 
