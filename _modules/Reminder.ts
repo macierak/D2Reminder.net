@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { IReminder } from "../_interfaces/IReminder"
 
 export class Reminder implements IReminder{

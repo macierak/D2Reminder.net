@@ -1,7 +1,5 @@
-import Reminder from "./Reminder";
 import {getToken, getchar} from "./BungieAPI"
 import {IGuardian} from "../_interfaces/IGuardian"
-const axios = require("axios");
 type plat = 1|2|3
 export class Guardian implements IGuardian{
 

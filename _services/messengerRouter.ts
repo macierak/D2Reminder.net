@@ -1,13 +1,6 @@
-import { IGuardian } from "../_interfaces/IGuardian"
-import { sendMess } from "../_modules/FacebookAPI"
-import Guardian from "../_modules/Guardian"
 import Reminder from "../_modules/Reminder"
 import { database } from "./databaseService"
-enum reminderType {
-	SINGLE,
-	MULTI,
-	NONE
-}
+
 const
 	express = require('express'),
 	bodyParser = require('body-parser'),
@@ -43,7 +36,7 @@ messengerRouter.post('/webhook', (req, res) => {
 				database.reminders?.insertOne(reminder)
 
 			} else if(senderMessage === `help`) {
-				sendMessage(senderPsid, sendHelpResponse(senderPsid))
+				sendMessage(senderPsid, sendHelpResponse())
 			} else {
 				sendMessage(senderPsid, "Message was not validated properly. send 'help' for proper message format")
 			}
@@ -99,7 +92,13 @@ function validate(text: string) {
 	return reminderType.NONE
 }
 
-function sendHelpResponse(senderPsid:string) {
+function sendHelpResponse() {
 	return "Welcone to D2Reminder!\nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.\nReminder is automatically deleted when delivered\nList of currently supported vendors: Ada-1, Banshee-44"
 
+}
+
+enum reminderType {
+	SINGLE,
+	MULTI,
+	NONE
 }

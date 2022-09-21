@@ -7,8 +7,6 @@ export const database : {
     guardians?: Collection<IGuardian> 
     reminders?: Collection<IReminder>
 } = { }
-const client = null, db = null
-
 export async function connectToDB(){
     dotenv.config()
     const client = new MongoClient(process.env.db_link as string);
@@ -18,4 +16,3 @@ export async function connectToDB(){
     database.guardians = db.collection<IGuardian>("Guardians")
     database.reminders = db.collection<IReminder>("Reminders")
 }
-

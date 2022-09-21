@@ -1,13 +1,12 @@
-import express, { Express } from "express";
+import express from "express";
 import { database } from "./databaseService";
 import Guardian from "../_modules/Guardian";
-import { refreshVendorInfo, vendorInfo } from "../_modules/dailyCheckup";
+import {  vendorInfo } from "../_modules/dailyCheckup";
 import Reminder from "../_modules/Reminder";
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser'
-import * as dotenv from "dotenv";
-import { downloadManifest, getchar, getToken } from "../_modules/BungieAPI";
-import { ObjectId } from "mongodb";
+import { downloadManifest, getToken } from "../_modules/BungieAPI";
+
 import { IGuardian } from "../_interfaces/IGuardian";
 export const app = express.Router()
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -26,16 +25,9 @@ app.post("/login", async function(req, res){
 })
 
 app.post("/new/user", async function(req, res){
-    let newGuardian:IGuardian 
     await getToken(new Guardian() , req.body.authCode).then(guard => {
-        newGuardian = guard
-        console.log(guard);
-        
-    })
-    //console.log(newGuardian.toJSON());
-    
-    //await database.guardians?.insertOne(newGuardian.toJSON())
-    
+        console.log(guard)     
+    })   
     return res.status(200).send({message: "Pomyślnie dodano konto"})
 })
 

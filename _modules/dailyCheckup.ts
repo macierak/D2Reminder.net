@@ -1,10 +1,7 @@
-import { WithId } from "mongodb";
 import { IGuardian } from "../_interfaces/IGuardian";
-import { IReminder } from "../_interfaces/IReminder";
 import { database } from "../_services/databaseService";
-import { getItemDetails, getVendorInfo } from "./BungieAPI";
+import { getVendorInfo } from "./BungieAPI";
 import { sendMess } from "./FacebookAPI";
-import Guardian from "./Guardian";
 import Reminder from "./Reminder";
 
 export let vendorInfo:any

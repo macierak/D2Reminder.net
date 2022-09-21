@@ -1,4 +1,3 @@
-import { Guardian } from "./Guardian";
 import axios from "axios";
 
 export async function sendMess(fb_id:string, textMess:string){

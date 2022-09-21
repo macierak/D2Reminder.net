@@ -1,13 +1,8 @@
 import axios from "axios";
-import { WithId } from "mongodb";
-import fs from 'fs';
-import path from 'path';
 import { IGuardian } from "../_interfaces/IGuardian";
 import { database } from "../_services/databaseService";
-import Guardian from "./Guardian"
-let manifestLink:String = ""
+let manifestLink:string = ""
 export let itemManifest: any
-
 
 async function ada(guardian: IGuardian) {
     let fullItemTable:any = [{
@@ -26,8 +21,7 @@ async function ada(guardian: IGuardian) {
         });
         return fullItemTable
     }).catch(err => {  
-        console.log("Ada Error")
-        //console.error(err)
+        console.error(err)
      })
     return fullItemTable
 }
@@ -50,7 +44,6 @@ async function banshee(guardian: IGuardian) {
         });
         return fullItemTable
     }).catch(err => { 
-        console.log(err)
         console.log("Banshee Error") 
     })
     return fullItemTable
@@ -61,15 +54,9 @@ export async function getVendorInfo(guardian:IGuardian){
         ada : await ada(guardian),
         banshee : await banshee(guardian)
     }
-    //console.log(vendorData.ada);
-    
     return vendorData
-    
 }
-//export async function loadManifest(guardian:IGuardian){ 
-    
-
-
+ 
 export async function downloadManifest(guardian:IGuardian) {
     await axios.get(`https://www.bungie.net/platform/Destiny2/Manifest/`, guardian.cred).then(res => {
     manifestLink = res.data.Response.jsonWorldContentPaths.en
@@ -164,4 +151,3 @@ export async function refresh(guardian: IGuardian) {
 
     }).catch(err => { console.log(err) })
 }
-
