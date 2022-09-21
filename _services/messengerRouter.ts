@@ -20,12 +20,12 @@ messengerRouter.use(bodyParser.json())
 messengerRouter.use(express.static('public'))
 messengerRouter.use(express.json())
 
-messengerRouter.post('/webhook', (req, res) => {
+messengerRouter.post('/webhook', async (req, res) => {
 	let body = req.body;
 	console.log(body);
 	console.log(body.entry[0].messaging[0].message.text);
 	if (body.object === 'page') {
-		body.entry.forEach((entry: any) => {
+		body.entry.forEach(async (entry: any) =>  {
 			//sample: dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417			
 			let webhookEvent = entry.messaging[0];
 			let senderPsid = webhookEvent.sender.id;
@@ -44,7 +44,7 @@ messengerRouter.post('/webhook', (req, res) => {
 				database.reminders?.insertOne(reminder)
 				sendMessage(senderPsid, reminder.toString())
 			} else if(senderMessage === `help`) {
-				sendMessage(senderPsid, sendHelpResponse(senderPsid))
+				sendMessage(senderPsid, await sendHelpResponse(senderPsid))
 			} else {
 				sendMessage(senderPsid, "Message was not validated properly. send 'help' for proper message format")
 			}
@@ -75,7 +75,7 @@ messengerRouter.get('/webhook', (req, res) => {
 	}
 });
 
-function sendMessage(sender_psid: string, message: string) {
+async function sendMessage(sender_psid: string, message: string) {
 	let data = {
 		headers: {
 			'content-Type': 'messengerRouterlication/json'
@@ -87,7 +87,7 @@ function sendMessage(sender_psid: string, message: string) {
 			'text': message
 		}
 	}
-	axios.post(`https://graph.facebook.com/v12.0/me/messages?access_token=${process.env.mess_token}`, data)
+	await axios.post(`https://graph.facebook.com/v12.0/me/messages?access_token=${process.env.mess_token}`, data)
 		.then(res => { })
 		.catch(err => { console.log(err.response) })
 }
@@ -100,9 +100,9 @@ function validate(text: string) {
 	return reminderType.NONE
 }
 
-function sendHelpResponse(senderPsid:string) {
-	sendMessage(senderPsid, "Welcone to D2Reminder!")
-	sendMessage(senderPsid, "Send a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.")
-	sendMessage(senderPsid, "Send that message again to cancel notification.")
+async function sendHelpResponse(senderPsid:string) {
+	await sendMessage(senderPsid, "Welcone to D2Reminder!")
+	await sendMessage(senderPsid, "Send a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.")
+	await sendMessage(senderPsid, "Send that message again to cancel notification.")
 	return "List of currently supported vendors: Ada-1, Banshee-44"
 }
