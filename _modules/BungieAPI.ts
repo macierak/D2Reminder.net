@@ -24,7 +24,6 @@ async function ada(guardian: IGuardian) {
                 })
                       
         });
-        console.log(fullItemTable)
         return fullItemTable
     }).catch(err => {  
         console.log("Ada Error")
