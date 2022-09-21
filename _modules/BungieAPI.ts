@@ -8,13 +8,6 @@ import Guardian from "./Guardian"
 let manifestLink:String = ""
 export let itemManifest: any
 
-const {chain}  = require('stream-chain');
-
-const {parser} = require('stream-json');
-const {pick}   = require('stream-json/filters/Pick');
-const {ignore} = require('stream-json/filters/Ignore');
-const {streamValues} = require('stream-json/streamers/StreamValues');
-const zlib = require('zlib');
 
 async function ada(guardian: IGuardian) {
     let fullItemTable:any = [{
@@ -74,12 +67,9 @@ export async function getVendorInfo(guardian:IGuardian){
     return vendorData
     
 }
-export async function loadManifest(guardian:IGuardian){ 
+//export async function loadManifest(guardian:IGuardian){ 
     
-}
-const pipeline = chain([
-    fs.createReadStream(path.resolve('/app/public/manifest.json'))
-])
+
 
 export async function downloadManifest(guardian:IGuardian) {
     await axios.get(`https://www.bungie.net/platform/Destiny2/Manifest/`, guardian.cred).then(res => {
@@ -93,7 +83,6 @@ export async function downloadManifest(guardian:IGuardian) {
 
 export function getItemDetails(hashIdentifier:string){
     return itemManifest.find(item => item[0] == hashIdentifier)
-     
 }
 
 export async function getToken(guardian: IGuardian, authorization_code: string):Promise<IGuardian> {
@@ -175,5 +164,5 @@ export async function refresh(guardian: IGuardian) {
         database.guardians?.findOneAndReplace({BNG_ID}, guardian)
 
     }).catch(err => { console.log(err) })
-
 }
+

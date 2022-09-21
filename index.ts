@@ -6,7 +6,7 @@ import { database, connectToDB } from "./_services/databaseService";
 import { app } from "./_services/router";
 import { messengerRouter }from "./_services/messengerRouter"
 import Guardian from "./_modules/Guardian";
-import { downloadManifest, getItemDetails, itemManifest, loadManifest, refresh } from "./_modules/BungieAPI";
+import { downloadManifest, getItemDetails, itemManifest, refresh } from "./_modules/BungieAPI";
 import { Filter, ObjectId } from "mongodb";
 const server = express()
 const port = process.env.PORT || 3000
