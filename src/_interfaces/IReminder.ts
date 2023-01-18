@@ -1,11 +1,13 @@
+import { ObjectId } from "mongodb"
+
 export interface IReminder{
-    fbId:string
     itemHash:string
-    secondaryHash:{    
+    secondaryHash:{
         1:string
         2:string
         3:string
         4:string
     }
+    fbId:string
 
 }

@@ -1,3 +1,5 @@
+import { IReminder } from "../_interfaces/IReminder"
+import { getItemDetails } from "../_modules/BungieAPI"
 import Reminder from "../_modules/Reminder"
 import { database } from "./databaseService"
 
@@ -13,16 +15,17 @@ messengerRouter.use(bodyParser.json())
 messengerRouter.use(express.static('public'))
 messengerRouter.use(express.json())
 
-messengerRouter.post('/webhook', (req, res) => {
+messengerRouter.post('/webhook', async (req, res) => {
 	let body = req.body;
 	console.log(body);
 	console.log(body.entry[0].messaging[0].message.text);
 	if (body.object === 'page') {
-		body.entry.forEach((entry: any) => {
+		body.entry.forEach(async (entry: any) => {
 			//sample: dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417			
 			let webhookEvent = entry.messaging[0];
 			let senderPsid = webhookEvent.sender.id;
 			let senderMessage:string = webhookEvent.message.text
+
 			if (validate(senderMessage) === reminderType.MULTI) {
 				let weaponID = senderMessage.split("&")[0].split("=")[1]
 				let perks = senderMessage.split("&")[1].split("=")[1].split(",")
@@ -36,11 +39,15 @@ messengerRouter.post('/webhook', (req, res) => {
 				database.reminders?.insertOne(reminder)
 
 			} else if(senderMessage === `help`) {
-				sendMessage(senderPsid, sendHelpResponse())
+				sendHelpResponse(senderPsid)
+			} else if(senderMessage === `reminders`) {
+				await sendMessage(senderPsid, "List of active reminders:")
+				database.reminders?.find({fbId: senderPsid}).forEach((reminder) => {
+					sendMessage(senderPsid, reminderToString(reminder))
+				})
 			} else {
 				sendMessage(senderPsid, "Message was not validated properly. send 'help' for proper message format")
 			}
-
 
 		})
 		res.status(200).send('EVENT_RECEIVED');
@@ -50,6 +57,7 @@ messengerRouter.post('/webhook', (req, res) => {
 
 	res.sendStatus(200)
 })
+
 
 messengerRouter.get('/webhook', (req, res) => {
 	console.log("INCOMING GET REQUEST")
@@ -92,13 +100,20 @@ function validate(text: string) {
 	return reminderType.NONE
 }
 
-function sendHelpResponse() {
-	return "Welcone to D2Reminder!\nSend a message like 'dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417' remember to use '&' after item ID to be notified when a vendor sells it.\nReminder is automatically deleted when delivered\nList of currently supported vendors: Ada-1, Banshee-44"
-
+async function sendHelpResponse(id:string) {
+	await sendMessage(id, "Welcome to D2Reminder!")
+	await sendMessage(id, "Send message to be notified about item availability by vendors like Banshee-44")
+	await sendMessage(id, "http://d2gunsmith.com can generate dimwishlist queries, example:")
+	await sendMessage(id, "dimwishlist:item=821154603&perks=3250034553,2420895100,3523296417")
+	await sendMessage(id, "or dimwishlist:item=821154603&")
 }
 
 enum reminderType {
 	SINGLE,
 	MULTI,
 	NONE
+}
+
+function reminderToString(reminder:IReminder) {
+	return `${getItemDetails(reminder.itemHash)}`
 }

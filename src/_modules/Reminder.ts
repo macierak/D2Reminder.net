@@ -1,20 +1,21 @@
+import { ObjectId } from "mongodb";
 import { IReminder } from "../_interfaces/IReminder"
 
 export class Reminder implements IReminder{
-    fbId: string;
     itemHash: string;
     secondaryHash: { 1: string; 2: string; 3: string; 4: string; };
+    fbId:string
     constructor(itemHash:string, secondaryHash:{ 1: string; 2: string; 3: string; 4: string }, fbId:string){
         this.itemHash = itemHash
         this.secondaryHash = secondaryHash
         this.fbId = fbId
     }
-    
+
     toJSON(){
         return {
             itemHash: this.itemHash,
             secondaryHash : this.secondaryHash,
-            fbId : this.fbId
+            fbId: this.fbId
         }
     }
     toString() {

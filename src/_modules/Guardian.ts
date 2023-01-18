@@ -20,8 +20,6 @@ export class Guardian implements IGuardian{
             'Authorization': ""
          },
     }
-    reminders = {}
-
     constructor(){  
         
         this.FB_ID = ""
@@ -39,8 +37,7 @@ export class Guardian implements IGuardian{
                 'X-API-Key' : process.env.key, 
                 'Authorization': `Bearer ${this.token}`
             },
-        },
-        this.reminders = {}
+        }
     }  
     
 
@@ -65,8 +62,7 @@ export class Guardian implements IGuardian{
                     'X-API-Key' : process.env.key,
                     'Authorization': `Bearer ${this.token}`
                 },
-            },
-            reminders: this.reminders
+            }
         }
     }
 }

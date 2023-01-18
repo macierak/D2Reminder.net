@@ -19,6 +19,5 @@ export interface IGuardian{
             'Authorization': string
          },
     }
-    reminders:{}
-    toJSON()
+    toJSON():{}
 }
