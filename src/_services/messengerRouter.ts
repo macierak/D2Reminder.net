@@ -35,13 +35,26 @@ messengerRouter.post('/webhook', async (req, res) => {
 				let reminder = new Reminder(itemID, perksHashTable, senderPsid)
 
 				database.reminders?.insertOne(reminder)
+				let itemName = (await getItemDetails(itemID)).Response.displayProperties.name
+				await sendMess(senderPsid, `Item ${itemName} was added to reminders`)
 
 			} else if(validate(senderMessage) === reminderType.SINGLE) {
 				let itemID = senderMessage.split("&")[0].split("=")[1]
 				let reminder = new Reminder(itemID, {1: "", 2: "", 3: "", 4: ""}, senderPsid)
 				database.reminders?.insertOne(reminder)
+				let itemName = (await getItemDetails(itemID)).Response.displayProperties.name
+				await sendMess(senderPsid, `Item ${itemName} was added to reminders`)
+				
+			} else if(validate(senderMessage) === reminderType.MONO) {
+				let itemID = senderMessage
+				let reminder = new Reminder(itemID, {1: "", 2: "", 3: "", 4: ""}, senderPsid)
+				database.reminders?.insertOne(reminder)
+				let itemName = (await getItemDetails(itemID)).Response.displayProperties.name
+				await sendMess(senderPsid, `Item ${itemName} was added to reminders`)
+
 			} else if(senderMessage.toLowerCase() === `help`) {
 				sendHelpResponse(senderPsid)
+
 			} else if(senderMessage.toLowerCase() === `reminders`) {
 				await sendMess(senderPsid, "List of active reminders:")
 				const reminders = await database.reminders?.find({ fbId: senderPsid }).toArray();
@@ -79,35 +92,15 @@ messengerRouter.get('/webhook', (req, res) => {
 	}
 });
 
-async function sendMessage(sender_psid: string, message: string) {
-	let data = {
-		headers: {
-			'content-Type': 'messengerRouterlication/json'
-		},
-		'recipient': {
-			'id': sender_psid
-		},
-		'message': {
-			'text': message
-		}
-	}
-	console.log("sending message " + data.message.text);
-	console.log(`https://graph.facebook.com/v12.0/me/messages?access_token=${process.env.mess_token}`);
-	
-	await axios.post(`https://graph.facebook.com/v12.0/me/messages?access_token=${process.env.mess_token}`, data)
-		.then(res => { console.log(res)})
-		.catch(err => { console.log(err.response) })
-}
-
 function validate(text: string) {
 	let regex1: RegExp = /dimwishlist:item=\d+&perks=(\d+(,\d+)+)/
 	let regex2: RegExp = /dimwishlist:item=\d+&/
 	let regex3: RegExp = /dimwishlist:item=\d+/
-	let regex4: RegExp = /\d+/
+	let regex4: RegExp = /^[0-9]+$/
 	if(regex1.test(text)) return reminderType.MULTI
 	if(regex2.test(text)) return reminderType.SINGLE
 	if(regex3.test(text)) return reminderType.SINGLE
-	if(regex4.test(text)) return reminderType.SINGLE
+	if(regex4.test(text)) return reminderType.MONO
 	return reminderType.NONE
 }
 
@@ -122,6 +115,7 @@ async function sendHelpResponse(id:string) {
 enum reminderType {
 	SINGLE,
 	MULTI,
+	MONO,
 	NONE
 }
 
