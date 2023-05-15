@@ -35,15 +35,11 @@ messengerRouter.post('/webhook', async (req, res) => {
 				let reminder = new Reminder(itemID, perksHashTable, senderPsid)
 
 				database.reminders?.insertOne(reminder)
-				let itemDetails = await getItemDetails(itemID)
-				await sendMess(senderPsid, `Item ${itemDetails.Response.displayProperties.name} was added to reminders`)
 
 			} else if(validate(senderMessage) === reminderType.SINGLE) {
 				let itemID = senderMessage.split("&")[0].split("=")[1]
 				let reminder = new Reminder(itemID, {1: "", 2: "", 3: "", 4: ""}, senderPsid)
 				database.reminders?.insertOne(reminder)
-				let itemDetails = await getItemDetails(itemID)
-				await sendMess(senderPsid, `Item ${itemDetails.Response.displayProperties.name} was added to reminders`)
 			} else if(senderMessage.toLowerCase() === `help`) {
 				sendHelpResponse(senderPsid)
 			} else if(senderMessage.toLowerCase() === `reminders`) {
