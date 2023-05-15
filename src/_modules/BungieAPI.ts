@@ -5,7 +5,7 @@ import { ItemDetailsResponse } from "../_Protocol/itemResponse";
 const BUNGIE_URL = "https://www.bungie.net/platform"
 
 function generateBaseVendorUrlForGuardian(guardian:IGuardian) {
-    return `${BUNGIE_URL}/Destiny2/${guardian.platform}/Profile/${guardian.BNG_ID}/Character/${guardian.CHAR_ID[1]}/Vendors`
+    return `${BUNGIE_URL}/Destiny2/${guardian.platform}/Profile/${guardian.BNG_ID}/Character`
 }
 
 async function ada(guardian: IGuardian) {
@@ -14,8 +14,8 @@ async function ada(guardian: IGuardian) {
         perks : {}
     }]
     fullItemTable.pop()
-
-    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/350061650/?components=305,302,402`, guardian.cred).then(res => {
+    
+    /* await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/${guardian.CHAR_ID[3]}/Vendors/350061650/?components=305,302,402`, guardian.cred).then(res => {
         let keys:any = Object.keys(res.data.Response.sales.data)        
         keys.forEach((element, index) => {
                 fullItemTable.push({
@@ -23,10 +23,35 @@ async function ada(guardian: IGuardian) {
                     perks : res.data.Response.itemComponents.perks.data[element]
                 })
         });
-        return fullItemTable
     }).catch(err => {  
         console.error(err)
      })
+    */
+    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/${guardian.CHAR_ID[1]}/Vendors/350061650/?components=305,302,402`, guardian.cred).then(res => {
+        let keys:any = Object.keys(res.data.Response.sales.data)        
+        keys.forEach((element, index) => {
+                fullItemTable.push({
+                    itemHash: res.data.Response.sales.data[element].itemHash,
+                    perks : res.data.Response.itemComponents.perks.data[element]
+                })
+        });
+    }).catch(err => {  
+        console.error(err.message)
+    })
+
+    /*
+    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/${guardian.CHAR_ID[2]}/Vendors/350061650/?components=305,302,402`, guardian.cred).then(res => {
+        let keys:any = Object.keys(res.data.Response.sales.data)        
+        keys.forEach((element, index) => {
+                fullItemTable.push({
+                    itemHash: res.data.Response.sales.data[element].itemHash,
+                    perks : res.data.Response.itemComponents.perks.data[element]
+                })
+        });
+    }).catch(err => {  
+        console.error(err.message)
+    })
+    */
     return fullItemTable
 }
 
@@ -36,7 +61,7 @@ async function banshee(guardian: IGuardian) {
         perks : {}
     }]
     fullItemTable.pop()
-    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/672118013/?components=305,302,402`, guardian.cred).then(res => {
+    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/${guardian.CHAR_ID[1]}/Vendors//672118013/?components=305,302,402`, guardian.cred).then(res => {
         let keys:any = Object.keys(res.data.Response.sales.data)
         keys.forEach((element, index) => {
             if(res.data.Response.itemComponents.perks.data[element]){
@@ -59,7 +84,7 @@ async function xur(guardian: IGuardian) {
         perks : {}
     }]
     fullItemTable.pop()
-    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/2190858386/?components=305,302,402`, guardian.cred).then(res => {
+    await axios.get(`${generateBaseVendorUrlForGuardian(guardian)}/${guardian.CHAR_ID[1]}/Vendors//2190858386/?components=305,302,402`, guardian.cred).then(res => {
         console.log(Object.keys(res.data.Response.sales.data));
         
         let keys:any = Object.keys(res.data.Response.sales.data)

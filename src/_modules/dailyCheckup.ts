@@ -16,7 +16,7 @@ export async function searchRemindersFor(hashIdentifier:string, vendor:string){
     let remindersList = await database.reminders?.find({ "itemHash": regex }).toArray() as unknown as Array<Reminder>
     remindersList.forEach(async element => {
         let itemDetails = await getItemDetails(hashIdentifier)
-        let message = `Your item: ${itemDetails.Response.displayProperties.name} is currentrly being sold by ${vendor}`
+        let message = `Your item: ${itemDetails.Response.displayProperties.name} is currently being sold by ${vendor}`
 
         sendMess(element.fbId, message)
         database.reminders?.findOneAndDelete(element)

@@ -10,19 +10,19 @@ import { messengerRouter } from "./src/_services/messengerRouter";
 const server = express()
 const port = process.env.PORT || 3001
 
-server.use(cors({origin:"*"}))
-server.use("/", messengerRouter)
+
 let defaultGuardian:IGuardian
 let bansheeItems:any
 let adaItems:any
+let xurItems:any
 
 async function main() {
     await connectToDB()
-    
+
     console.log("Connection to db successfull");
     
     await initializeInMemoryVariables()
-    await initializeScheduler()
+    await schedule('* 18 * * *', async () => checkReminders())
     
     server.listen(port)
     console.log(`Server is listening on port ${port}`);
@@ -33,6 +33,9 @@ async function main() {
 
 async function initializeInMemoryVariables() {
     console.log("Initializing default variables...");
+
+    server.use(cors({origin:"*"}))
+    server.use("/", messengerRouter)
 
     let test = await database.guardians?.findOne({})     
     defaultGuardian = test as IGuardian
@@ -46,25 +49,24 @@ async function initializeInMemoryVariables() {
     console.log("Initialization successfull");
 }
 
-
-async function initializeScheduler() {
-    //  O godzinie 18:00+00:00 - Odświeżenie informacji o sprzedawcach
-    schedule('* 18 * * *', async () => {
-        await refresh(defaultGuardian)
-        await refreshVendorInfo(defaultGuardian)
-        bansheeItems = Object.values(vendorInfo.banshee)
-        adaItems = Object.values(vendorInfo.ada)
-        bansheeItems.forEach(async element => { 
-            await searchRemindersFor(element.itemHash, "Banshee-44")
-        });
-        adaItems.forEach(async element => {
-            await searchRemindersFor(element.itemHash, "Ada-1")
-        });
-    } )
-
-    console.log("Cron set up properly");
+export async function checkReminders() {
+    await refresh(defaultGuardian)
+    await refreshVendorInfo(defaultGuardian)
+    
+    bansheeItems = Object.values(vendorInfo.banshee)
+    adaItems = Object.values(vendorInfo.ada)
+    xurItems = Object.values(vendorInfo.xur)
+    
+    bansheeItems.forEach(async element => { 
+        await searchRemindersFor(element.itemHash, "Banshee-44")
+    });
+    adaItems.forEach(async element => {
+        await searchRemindersFor(element.itemHash, "Ada-1")
+    });
+    xurItems.forEach(async element => {
+        await searchRemindersFor(element.itemHash, "Xur")
+    });
 }
-
 
 main()
 
